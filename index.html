@@ -4,40 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amoba</title>
+    <title>Document</title>
     <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: auto auto auto;
-            grid-gap: 1px;
-            background-color: #2196F3;
-            padding: 1px;
-        }
-        
-        .grid-container>div {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid black;
+        table,
+        th,
+        td {
+            border: 4px solid rgb(59, 28, 196);
+            border-collapse: collapse;
+            max-width: 320px;
+            height: 100px;
             text-align: center;
-            font-size: 200px;
         }
     </style>
 </head>
 
 <body>
-    <div class="grid-container">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-        <div>6</div>
-        <div>7</div>
-        <div>8</div>
-        <div>9</div>
-    </div>
+
+
+    <table style="width:100%">
+
+        <tr>
+            <td class="0" data-index='[0][0]'>0</td>
+            <td class="1" data-index='[0][1]'>1</td>
+            <td class="2" data-index='[0][2]'>2</td>
+        </tr>
+
+        <tr>
+            <td class="3" data-index='[1][0]'>3</td>
+            <td class="4" data-index='[1][1]'>4</td>
+            <td class="5" data-index='[1][2]'>5</td>
+        </tr>
+        <tr>
+            <td class="6" data-index='[2][0]'>6</td>
+            <td class="7" data-index='[2][1]'>7</td>
+            <td class="8" data-index='[2][2]'>8</td>
+        </tr>
+    </table>
+
+    <script>
+        'use strict '
+        let cellak = Array.from(document.querySelectorAll('td '));
+        let jatekosNev = 'Jancsi ';
+
+        const matrix = [
+            [' ', ' ', ' '],
+            [' ', ' ', ' '],
+            [' ', ' ', ' '],
+        ];
 
 
 
+
+        /* amelyik td-n tortent a kattintas,annak a td-nek az innnerText mezojet irjuk at,annak fuggvenyeben hogy melyik jatekos nyomta a gombot */
+        /* amikor a td-ben megtortent a modositas,akkor a matrix fel kel tolteni az uj elemmel  */
+        /*  minden kattintas-feltoltesi muvelet utan ellenorizni kell hogy nem nyert-e vmelyik jatekos (O vagy X 3db egymas mellett,alatt,atloba) */
+        function checkPlayStatus() {
+            window.onclick = function(event) {
+
+                let kattintottCellaSzama = event.target.className;
+                if (jatekosNev === 'Jancsi ') {
+                    cellak[kattintottCellaSzama].innerText = 'X';
+                    jatekosNev = 'Piroska ';
+                } else {
+
+                    cellak[kattintottCellaSzama].innerText = 'O';
+                    jatekosNev = 'Jancsi ';
+                }
+                /* amikor a td-ben megtortent a modositas,akkor a matrix fel kel tolteni az uj elemmel  */
+                contentUpload();
+                console.log(matrix);
+
+            }
+        };
+
+
+        /* SEGEDFUGGVENY: amikor a td-ben megtortent a modositas,akkor a matrix fel kel tolteni az uj elemmel  */
+        /* EZT NEM TUDOM LEPROGRAMOZNI !!!!! */
+        function contentUpload() {
+            let cellak = Array.from(document.querySelectorAll('td '));
+            for (let i = 0; i < cellak.length; i += 1) {
+                for (let i = 0; i < matrix.length; i += 1) {
+                    for (let j = 0; j < matrix[i].length; j += 1) {
+                        matrix[i][j] = cellak[i].textContent;
+                        /*    console.log(cellak[i].textContent); */
+
+                    }
+                }
+            }
+            console.log(matrix);
+        }
+
+        /* SEGEDFUGGVENY: minden kattintas-feltoltesi muvelet utan ellenorizni kell hogy nem nyert-e vmelyik jatekos (O vagy X 3db egymas mellett,alatt,atloba) */
+        function checkPlayStatus() {
+            const nyertX = matrix.every(item => item = 'X ');
+            console.log(nyertX);
+        };
+    </script>
 </body>
 
 </html>
