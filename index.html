@@ -1,104 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        table,
-        th,
-        td {
-            border: 4px solid rgb(59, 28, 196);
-            border-collapse: collapse;
-            max-width: 320px;
-            height: 100px;
-            text-align: center;
+        html {
+            font-size: 24px;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .tictactoe {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tictactoe__row {
+            display: flex;
+        }
+
+        .tictactoe__cell {
+            border: 1px solid #ddd;
+            height: 2rem;
+            padding: .5rem;
+            width: 2rem;
         }
     </style>
+
 </head>
 
 <body>
-
-
-    <table style="width:100%">
-
-        <tr>
-            <td class="0" data-index='[0][0]'>0</td>
-            <td class="1" data-index='[0][1]'>1</td>
-            <td class="2" data-index='[0][2]'>2</td>
-        </tr>
-
-        <tr>
-            <td class="3" data-index='[1][0]'>3</td>
-            <td class="4" data-index='[1][1]'>4</td>
-            <td class="5" data-index='[1][2]'>5</td>
-        </tr>
-        <tr>
-            <td class="6" data-index='[2][0]'>6</td>
-            <td class="7" data-index='[2][1]'>7</td>
-            <td class="8" data-index='[2][2]'>8</td>
-        </tr>
-    </table>
+    <div class="tictactoe">
+        <div class="tictactoe__row">
+            <div class="tictactoe__cell" data-row="0" data-cell="0"></div>
+            <div class="tictactoe__cell" data-row="0" data-cell="1"></div>
+            <div class="tictactoe__cell" data-row="0" data-cell="2"></div>
+        </div>
+        <div class="tictactoe__row">
+            <div class="tictactoe__cell" data-row="1" data-cell="0"></div>
+            <div class="tictactoe__cell" data-row="1" data-cell="1"></div>
+            <div class="tictactoe__cell" data-row="1" data-cell="2"></div>
+        </div>
+        <div class="tictactoe__row">
+            <div class="tictactoe__cell" data-row="2" data-cell="0"></div>
+            <div class="tictactoe__cell" data-row="2" data-cell="1"></div>
+            <div class="tictactoe__cell" data-row="2" data-cell="2"></div>
+        </div>
+    </div>
+    <p class="message"></p>
+    <button class="new-game">New game</button>
 
     <script>
-        'use strict '
-        let cellak = Array.from(document.querySelectorAll('td '));
-        let jatekosNev = 'Jancsi ';
+        const rows = 3;
+        const cols = 3;
+        let matrix;
+        let stepCount = 0;
+        let mark = 'X';
 
-        const matrix = [
-            [' ', ' ', ' '],
-            [' ', ' ', ' '],
-            [' ', ' ', ' '],
-        ];
-
-
-
-
-        /* amelyik td-n tortent a kattintas,annak a td-nek az innnerText mezojet irjuk at,annak fuggvenyeben hogy melyik jatekos nyomta a gombot */
-        /* amikor a td-ben megtortent a modositas,akkor a matrix fel kel tolteni az uj elemmel  */
-        /*  minden kattintas-feltoltesi muvelet utan ellenorizni kell hogy nem nyert-e vmelyik jatekos (O vagy X 3db egymas mellett,alatt,atloba) */
-        function checkPlayStatus() {
-            window.onclick = function(event) {
-
-                let kattintottCellaSzama = event.target.className;
-                if (jatekosNev === 'Jancsi ') {
-                    cellak[kattintottCellaSzama].innerText = 'X';
-                    jatekosNev = 'Piroska ';
-                } else {
-
-                    cellak[kattintottCellaSzama].innerText = 'O';
-                    jatekosNev = 'Jancsi ';
-                }
-                /* amikor a td-ben megtortent a modositas,akkor a matrix fel kel tolteni az uj elemmel  */
-                contentUpload();
-                console.log(matrix);
-
-            }
-        };
-
-
-        /* SEGEDFUGGVENY: amikor a td-ben megtortent a modositas,akkor a matrix fel kel tolteni az uj elemmel  */
-        /* EZT NEM TUDOM LEPROGRAMOZNI !!!!! */
-        function contentUpload() {
-            let cellak = Array.from(document.querySelectorAll('td '));
-            for (let i = 0; i < cellak.length; i += 1) {
-                for (let i = 0; i < matrix.length; i += 1) {
-                    for (let j = 0; j < matrix[i].length; j += 1) {
-                        matrix[i][j] = cellak[i].textContent;
-                        /*    console.log(cellak[i].textContent); */
-
-                    }
-                }
-            }
-            console.log(matrix);
+        const initState = () => {
+            matrix = Array(cols).fill(null).map(() => Array(rows).fill(null))
         }
 
-        /* SEGEDFUGGVENY: minden kattintas-feltoltesi muvelet utan ellenorizni kell hogy nem nyert-e vmelyik jatekos (O vagy X 3db egymas mellett,alatt,atloba) */
-        function checkPlayStatus() {
-            const nyertX = matrix.every(item => item = 'X ');
-            console.log(nyertX);
-        };
+        const changeMatrixValue = (element) => {
+            const row = parseInt(element.dataset.row, 10);
+            const cell = parseInt(element.dataset.cell, 10);
+            matrix[row][cell] = element.textContent;
+        }
+
+        const deleteSigns = () => {
+            document
+                .querySelectorAll('.tictactoe__cell')
+                .forEach(element => {
+                    element.textContent = '';
+                });
+        }
+
+        const increaseCounter = () => {
+            stepCount += 1;
+        }
+
+        const modifyCell = (element) => {
+            element.textContent = mark;
+            element.removeEventListener('click', handleClick);
+        }
+
+        const setMark = () => {
+            mark = mark === 'X' ? 'O' : 'X';
+        }
+
+        const handleClick = (event) => {
+            increaseCounter();
+            modifyCell(event.target);
+            setMark();
+            changeMatrixValue(event.target);
+            checkWinner();
+        }
+
+        const addClickListener = () => {
+            document
+                .querySelectorAll('.tictactoe__cell')
+                .forEach(element => {
+                    element.addEventListener('click', handleClick)
+                });
+        }
+
+        const removeAllClickListener = () => {
+            document.querySelectorAll('.tictactoe__cell')
+                .forEach(element => {
+                    element.removeEventListener('click', handleClick)
+                });
+        }
+
+        const checkValues = (arr) => arr.map(row =>
+            row.every((value) => value === 'X') ||
+            row.every((value) => value === 'O'))
+            .indexOf(true) !== -1;
+
+        const checkColumnValues = () =>
+            checkValues(matrix.map((arr, i) => arr.map((item, j) => matrix[j][i])))
+
+        const checkDiagonalValues = () =>
+            // [
+            //     [1, 2, 3],
+            //     [4, 5, 6],
+            //     [7, 8, 9],
+            // ]
+            checkValues([
+                matrix.map((arr, i) => arr[i]),
+                matrix.map((arr, i) => arr[i][cols - i - 1])
+            ])
+
+        const checkWinner = () => {
+            console.log(checkColumnValues(), checkDiagonalValues());
+            if (checkValues(matrix) || checkColumnValues() || checkDiagonalValues()) {
+                endGame();
+            }
+        }
+
+        const setMessage = (message) => {
+            document
+                .querySelector('.message')
+                .textContent = message
+        }
+
+        const startGame = () => {
+            initState();
+            addClickListener();
+            newGame();
+        }
+
+        const endGame = () => {
+            setMessage('A győztes: ' + (mark === 'X' ? 'O' : 'X'));
+            removeAllClickListener();
+        }
+
+        const newGame = () => {
+            document
+                .querySelector('.new-game')
+                .addEventListener('click', () => {
+                    initState();
+                    addClickListener();
+                    deleteSigns();
+                    setMessage('');
+                    setMark()
+                })
+        }
+
+        startGame();
     </script>
 </body>
 
